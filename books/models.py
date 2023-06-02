@@ -1,7 +1,8 @@
 from django.db import models
-
+from django.utils import timezone
 
 class Author(models.Model):
+    db_table = "Autors"
     name = models.CharField(max_length=100)
     bio = models.TextField()
 
@@ -10,6 +11,7 @@ class Author(models.Model):
 
 
 class Book(models.Model):
+    db_table = "Books"
     title = models.CharField(max_length=100)
     authors = models.ManyToManyField(Author)
     description = models.TextField()
@@ -19,3 +21,12 @@ class Book(models.Model):
 
     def __str__(self):
         return self.title
+
+    @classmethod
+    def Books(cls):
+        today = timezone.now().date()
+        return cls.objects.filter(publication_date__gte=today)
+
+    @classmethod
+    def get_books(cls, primary_key):
+        return cls.objects.get(pk=primary_key)
